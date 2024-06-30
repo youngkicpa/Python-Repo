@@ -11,7 +11,7 @@ def killExcel():
                 proc.kill()
 
 
-def LoadExcle(filename, sheetname):
+def LoadExcel(filename, sheetname):
     xl = win.gencache.EnsureDispatch("Excel.Application")
     xl.Visible = False
 
@@ -60,21 +60,110 @@ def testVoucherAmount(vouchers):
          if not voucher.TestAmounts():
               print(f"{voucher.no}\t {voucher.debitSum}\t{voucher.creditSum}\t{voucher.TestAmounts()}")
 
+def testVoucherSales(voucher):
+    if len(voucher.credit["codes"]) == 0:
+         return False
+    for x in voucher.credit["codes"]:
+        if 4110000 <= int(x) <= 4200000:
+            return True 
+    return False
 
+def testVoucherMinusSales(voucher):
+    if len(voucher.credit["codes"]) == 0:
+         return False
+    for index, x in enumerate(voucher.credit["codes"]):
+        if 4110000 <= int(x) <= 4200000 and voucher.credit["amounts"][index] < 0:
+            return True 
+    return False
+
+def salesTransactions(vouchers):
+    debitInfo = {}
+    creditInfo = {}
+    for voucher in vouchers:
+        if testVoucherSales(voucher):
+            for index, d in enumerate(voucher.debit["accounts"]):
+                if d in debitInfo:
+                    debitInfo[d] += voucher.debit["amounts"][index]
+                else:
+                    debitInfo[d] = voucher.debit["amounts"][index]
+
+            for index, c in enumerate(voucher.credit["accounts"]):
+                if c in creditInfo:
+                    creditInfo[c] += voucher.credit["amounts"][index]
+                else:
+                    creditInfo[c] = voucher.credit["amounts"][index]
+
+    print("차변")
+    for key, value in debitInfo.items():
+         print(f"{key}\t{value}")
+    print("대변")
+    for key, value in creditInfo.items():
+         print(f"{key}\t{value}")
+
+def minusSalesTransactions(vouchers):
+    debitInfo = {}
+    creditInfo = {}
+    count = 0
+    filtered = []
+    for voucher in vouchers:
+        if testVoucherMinusSales(voucher):
+            count += 1
+            filtered.append(voucher)
+            for index, d in enumerate(voucher.debit["accounts"]):
+                if d in debitInfo:
+                    debitInfo[d] += voucher.debit["amounts"][index]
+                else:
+                    debitInfo[d] = voucher.debit["amounts"][index]
+
+            for index, c in enumerate(voucher.credit["accounts"]):
+                if c in creditInfo:
+                    creditInfo[c] += voucher.credit["amounts"][index]
+                else:
+                    creditInfo[c] = voucher.credit["amounts"][index]
+
+    print(f"{count}개의 전표가 있습니다.")
+    print("차변")
+    for key, value in debitInfo.items():
+         print(f"{key}\t{value}")
+    print("대변")
+    for key, value in creditInfo.items():
+         print(f"{key}\t{value}")
+    return filtered
+
+def SaveExcel(filename, data):
+    xl = win.gencache.EnsureDispatch("Excel.Application")
+    xl.Visible = False
+
+    wb = xl.Workbooks.Add()
+    ws = wb.Worksheets(1)
+
+    ws.Range(xl.Cells(1, 1), xl.Cells(len(data), len(data[0]))).Value = tuple(data)
+
+    wb.SaveAs(filename)
+    wb.Close()
+    xl.Quit()
+    
+    return data
 
 if __name__ == "__main__":
     filename = "C:\\DataTest\\분개장_FY23_아모텍.xlsx"
     sheetname = "2023"
-    data = LoadExcle(filename, sheetname)
+    data = LoadExcel(filename, sheetname)
     killExcel()
-    glforAmotech = Amotech(data)
+    #glforAmotech = Amotech(data)
 
     #glforAmotech.getTrialBalance()
     #glforAmotech.printTrialBalance()
     vouchers = getVoucher(data)
     
+    filtered = minusSalesTransactions(vouchers)
+    filteredList = []
+    for voucher in filtered:
+         filteredList.extend(voucher.ToList())
+
+    SaveExcel("C:\\Users\\young\\Downloads\\result.xlsx", filteredList)
     del data
-    testVoucherAmount(vouchers)
+    #testVoucherAmount(vouchers)
 
     print("Hello")
 
