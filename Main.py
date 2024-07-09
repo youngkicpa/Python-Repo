@@ -5,7 +5,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = QMainWindow()
     
-    options = QFileDialog.Options()
+    options = QFileDialog.Options() # type: ignore
     file_name, _ = QFileDialog.getOpenFileName(None, "Open File", "", "All Files (*)", options=options)
 
     print(file_name)

@@ -10,20 +10,7 @@ class Amotech:
             return True
         else:
             return False
-        
-    def getTransaction(self, data):
-        start = False
-        trannsaction = {}
-        for x in self.data:
-            if self.testforTitles(x):
-                start = True
-                continue
-            if not start:
-                continue
-            else:
-                continue        
-        return None
-        
+                    
     def getTrialBalance(self):
         start = False
         for x in self.data:
@@ -43,6 +30,13 @@ class Amotech:
                     self.trialBalance[(x[3], x[4])][1] += x[6]
                     self.trialBalance[(x[3], x[4])][2] += x[7]
     
+    def changeTrialBalanceList(self):
+        result = []
+        for key, value in self.trialBalance.items():
+            result.append((key[0], key[1], value[0], value[1], value[2]))
+        
+        return result
+
     def printTrialBalance(self):
         sumCount = 0
         sumDebit = 0
