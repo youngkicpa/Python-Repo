@@ -41,44 +41,62 @@ def SaveExcel(filename, data):
     
     return data
 
-if __name__ == "__main__":
-    filename = "C:\\DataTest\\분개장_FY23_아모텍.xlsx"
-    sheetname = "2023"
-    targetFileName = "C:\\Users\\young\\Downloads\\result.xlsx"
-    
+def GetExcelData():
+    filename = "C:\\DataTest\\아모텍_분개장 (2023_12)_최종_전표승인포함.xlsx"
+    sheetname = "2023"  
     data = LoadExcel(filename, sheetname)
     killExcel()
-    
-    #glforAmotech = Amotech(data)
+    return data
 
-    #glforAmotech.getTrialBalance()
-
-    #trialBalance = glforAmotech.changeTrialBalanceList()
-    #SaveExcel(targetFileName, sorted(trialBalance))
-    #glforAmotech.printTrialBalance()
-    
+if __name__ == "__main__":    
+    targetFileName = "C:\\Users\\young\\Downloads\\result.xlsx"
+    data = GetExcelData()
     vouchers = Vouchers()
     vouchers.getVouchers(data)
 
-    vouchers.getVouchersAmounts()
-    #result = vouchers.getFiltered(vouchers.testVoucherMinusSales)   
-    #vouchers.salesTransactions()
-
-    #filtered = minusSalesTransactions(vouchers)
     
-    #filteredList = []
-    
-    #for voucher in filtered:
-    #     filteredList.extend(voucher.ToList())
+    trialNo = 0
+    while  1:
+        print("다음 중 원하는 작업을 선택하시요")
+        print("   1. 합계시산표를 만들기")
+        print("   2. 매출이 (-)인 전표를 추출하기")
+        print("   3. 매출전표들의 차대변 합계를 구하기")
+        print("   4. 차대변 합계가 다른 전표 확인하기")
+        print("   5. 전표금액의 범위별 숫자확인하기")
+        print("   9. 종료하기")
+        selection = input()
+        trialNo += 1
+        match selection:
+            case '1':
+                print(f"\nHello {trialNo}")
+                glforAmotech = Amotech(data)
+                glforAmotech.getTrialBalance()
+                trialBalance = glforAmotech.changeTrialBalanceList()
+                SaveExcel(targetFileName, sorted(trialBalance))
+                glforAmotech.printTrialBalance()
+            case '2':
+                print(f"\nHello {trialNo}")
+                filtered = vouchers.minusSalesTransactions()    
+                filteredList = []    
+                for voucher in filtered:
+                     filteredList.extend(voucher.ToList())
+                SaveExcel(targetFileName, filteredList)
+            case '3':
+                print(f"\nHello {trialNo}")
+                vouchers.salesTransactions()
+            case '4':
+                print(f"\nHello {trialNo}")
+                vouchers.testVoucherAmount()
+            case '5':
+                print(f"\nHello {trialNo}")           
+                result = vouchers.getVouchersAmounts()
+                SaveExcel(targetFileName, result)
+            case '9':
+                break 
+            case _ : 
+                continue 
 
-    #SaveExcel(targetFileName, filteredList)
-    #del data
-    #testVoucherAmount(vouchers)
-
-    #result = vouchers.getVouchersAmounts()
-    #SaveExcel(targetFileName, result)
-    print("Hello")
-
+        
 
     
 

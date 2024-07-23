@@ -29,10 +29,11 @@ class Vouchers:
                         currentVoucher.Add(row)
                         previousNo = row[1][0:13]
                      
-    def testVoucherAmount(self, vouchers):
+    def testVoucherAmount(self):
         for voucher in self.vouchers:
             if not voucher.TestAmounts():
                 print(f"{voucher.no}\t {voucher.debitSum}\t{voucher.creditSum}\t{voucher.TestAmounts()}")
+        print("\n\n전표의 차대변 합계 검증이 끝났습니다.\n\n")
 
     def testVoucherSales(self, voucher):
         if len(voucher.credit["codes"]) == 0:
@@ -150,9 +151,9 @@ class Vouchers:
                     result["백억초과"] += 1
                     #resultList.extend(voucher.ToList())
 
-        print(f"전표의 총갯수는 : {count}")
+        print(f"\n전표의 총갯수는 : {count}")
         print(f"(-)전표의 갯수는: {count_minus}")
         for key, value in result.items():
             print(f"{key}: \t {value:>7}개\t {value/count*100 if count != 0 else 0.00:>6.2f}%")
-
+        print("\n")
         return resultList    

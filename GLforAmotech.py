@@ -4,6 +4,10 @@ class Amotech:
     def __init__(self, data) -> None:
         self.data = data
         self.trialBalance = {}
+        self.debitColNo = 9
+        self.creditColNo = 10
+        self.codeColNo = 7
+        self.accountColNo = 8
 
     def testforTitles(self, row):
         if row[0] == "회계일":
@@ -20,15 +24,15 @@ class Amotech:
             if not start:
                 continue
             else:
-                if (x[3], x[4]) not in self.trialBalance:
-                    self.trialBalance[(x[3], x[4])] = [0, 0, 0]
-                    self.trialBalance[(x[3], x[4])][0] = 1
-                    self.trialBalance[(x[3], x[4])][1] = x[6]
-                    self.trialBalance[(x[3], x[4])][2] = x[7]
+                if (x[self.codeColNo], x[self.accountColNo]) not in self.trialBalance:
+                    self.trialBalance[(x[self.codeColNo], x[self.accountColNo])] = [0, 0, 0]
+                    self.trialBalance[(x[self.codeColNo], x[self.accountColNo])][0] = 1
+                    self.trialBalance[(x[self.codeColNo], x[self.accountColNo])][1] = x[self.debitColNo]
+                    self.trialBalance[(x[self.codeColNo], x[self.accountColNo])][2] = x[self.creditColNo]
                 else:
-                    self.trialBalance[(x[3], x[4])][0] += 1
-                    self.trialBalance[(x[3], x[4])][1] += x[6]
-                    self.trialBalance[(x[3], x[4])][2] += x[7]
+                    self.trialBalance[(x[self.codeColNo], x[self.accountColNo])][0] += 1
+                    self.trialBalance[(x[self.codeColNo], x[self.accountColNo])][1] += x[self.debitColNo]
+                    self.trialBalance[(x[self.codeColNo], x[self.accountColNo])][2] += x[self.creditColNo]
     
     def changeTrialBalanceList(self):
         result = []

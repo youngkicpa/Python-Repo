@@ -6,24 +6,30 @@ class Voucher:
         self.debitSum = 0
         self.creditSum = 0
         self.amountTest = False
+        self.preparedColNo = 2
+        self.depColNo = 3 
+        self.codeColNo = 7
+        self.accountColNo = 8
+        self.debitColNo = 9
+        self.creditColNo = 10       
 
     def Add(self, row):
         if self.no == "":
             self.no = row[1][0:13]
-        if row[6] == 0:
-            self.credit["amounts"].append(row[7])
-            self.credit["codes"].append(row[3])
-            self.credit["accounts"].append(row[4])
-            self.credit["prepared"].append(row[14])
-            self.credit["dep"].append(row[15])
-            self.creditSum += row[7]
+        if row[self.debitColNo] == 0:
+            self.credit["amounts"].append(row[self.creditColNo])
+            self.credit["codes"].append(row[self.codeColNo])
+            self.credit["accounts"].append(row[self.accountColNo])
+            self.credit["prepared"].append(row[self.preparedColNo])
+            self.credit["dep"].append(row[self.depColNo])
+            self.creditSum += row[self.creditColNo]
         else:
-            self.debit["amounts"].append(row[6])
-            self.debit["codes"].append(row[3])
-            self.debit["accounts"].append(row[4])
-            self.debit["prepared"].append(row[14])
-            self.debit["dep"].append(row[15])
-            self.debitSum += row[6]
+            self.debit["amounts"].append(row[self.debitColNo])
+            self.debit["codes"].append(row[self.codeColNo])
+            self.debit["accounts"].append(row[self.accountColNo])
+            self.debit["prepared"].append(row[self.preparedColNo])
+            self.debit["dep"].append(row[self.depColNo])
+            self.debitSum += row[self.debitColNo]
 
     def TestAmounts(self):
         return self.debitSum == self.creditSum
