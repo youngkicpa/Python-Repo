@@ -42,8 +42,8 @@ def SaveExcel(filename, data):
     return data
 
 def GetExcelData():
-    filename = "C:\\DataTest\\아모텍_분개장 (2023_12)_최종_전표승인포함.xlsx"
-    sheetname = "2023"  
+    filename = "C:\\DataTest\\아모텍_분개장 (2024_06).xlsx"
+    sheetname = "Sheet1"  
     data = LoadExcel(filename, sheetname)
     killExcel()
     return data
@@ -64,6 +64,9 @@ if __name__ == "__main__":
         print("   4. 차대변 합계가 다른 전표 확인하기")
         print("   5. 전표금액의 범위별 숫자확인하기")
         print("   9. 종료하기")
+        print("   \nAttributeError: module 'win32com.gen_py.00020813-0000-0000-C000-000000000046x0x1x9' has no attribute 'CLSIDToClassMap'")
+        print("   위의 에러메시지가 발생을 하면, 해결하는 방법은 C:\\Users\\young\\AppData\\Local\\Temp\\gen_py 폴더의 내용을 모두 삭제한다.")
+        print("   그래도 안되면, pip uninstall pywin32 그리고 pip install pywin32")
         selection = input()
         trialNo += 1
         match selection:

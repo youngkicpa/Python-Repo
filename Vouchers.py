@@ -134,7 +134,7 @@ class Vouchers:
                     result["(-)전표"] += 1
                     if n < -100000000:
                         count_minus += 1
-                        resultList.extend(voucher.ToList())
+                        #resultList.extend(voucher.ToList())
                 case n if 0 <= n <= 100000000:
                     result["일억이하"] += 1
                 case n if 100000000 < n <= 1000000000:
@@ -149,11 +149,11 @@ class Vouchers:
                     result["백억이하"] += 1
                 case n if 10000000000 < n:
                     result["백억초과"] += 1
-                    #resultList.extend(voucher.ToList())
+                    resultList.extend(voucher.ToList())
 
         print(f"\n전표의 총갯수는 : {count}")
-        print(f"(-)전표의 갯수는: {count_minus}")
+        print(f"(-)1억미만전표의 갯수는: {count_minus}")
         for key, value in result.items():
-            print(f"{key}: \t {value:>7}개\t {value/count*100 if count != 0 else 0.00:>6.2f}%")
+            print(f"{key}: \t {value:>7}\t개\t {value/count*100 if count != 0 else 0.00:>6.2f}%")
         print("\n")
         return resultList    
