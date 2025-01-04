@@ -67,7 +67,7 @@ if __name__ == "__main__":
         print("   \nAttributeError: module 'win32com.gen_py.00020813-0000-0000-C000-000000000046x0x1x9' has no attribute 'CLSIDToClassMap'")
         print("   위의 에러메시지가 발생을 하면, 해결하는 방법은 C:\\Users\\young\\AppData\\Local\\Temp\\gen_py 폴더의 내용을 모두 삭제한다.")
         print("   그래도 안되면, pip uninstall pywin32 그리고 pip install pywin32")
-        selection = input()
+        selection = input("선택:  ")
         trialNo += 1
         match selection:
             case '1':

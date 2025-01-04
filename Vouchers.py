@@ -14,7 +14,7 @@ class Vouchers:
         previousNo = ""
         start = False
         currentVoucher = Voucher()
-        for row in data:
+        for i, row in enumerate(data):
             if self.testforTitles(row):
                 start = True
                 continue
@@ -28,6 +28,8 @@ class Vouchers:
                         currentVoucher = Voucher()
                         currentVoucher.Add(row)
                         previousNo = row[1][0:13]
+                if i == len(data) - 1:
+                    self.vouchers.append(currentVoucher)
                      
     def testVoucherAmount(self):
         for voucher in self.vouchers:
