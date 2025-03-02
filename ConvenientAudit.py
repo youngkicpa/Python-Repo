@@ -52,7 +52,7 @@ class FolderSelectorApp(QMainWindow):
             "회계연도":   "회계연도: 제 38 기 - 2024 년 1 월 1 일부터   2024  년 12 월 31 일까지",            
             "회사명":     "회사명: (주)비룡"
         }
-        xl = win.gencache.EnsureDispatch("Excel.Application")
+        xl = win.gencache.EnsureDispatch("Excel.Application") # type: ignore
         xl.Visible = False        
         
         if folder_path:

@@ -3,7 +3,7 @@ import win32com.client as win32
 
 def convert_xls_to_xlsx(folder_path):
     # Excel 애플리케이션을 시작합니다
-    excel = win32.gencache.EnsureDispatch("Excel.Application")
+    excel = win32.gencache.EnsureDispatch("Excel.Application") # type: ignore
     excel.Visible = False  # Excel 창을 표시하지 않음
 
     for root, _, files in os.walk(folder_path):
