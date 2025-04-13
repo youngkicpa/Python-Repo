@@ -53,8 +53,8 @@ def SaveExcel(filename, data):
     return data
 
 def GetExcelData():
-    filename = "C:\\Users\\young\\다산\\우리팀 - 문서\\11. 삼진엘앤디\\JE Test자료_3Q\\계정별보조부조회(20240630~20240930)_yskim.xlsx"
-    sheetname = "계정별보조부조회"  
+    filename = r"C:\Users\young\Downloads\계정별원장_삼진엘앤디_하반기.xlsx"
+    sheetname = "계정별원장"  
     data = LoadExcel(filename, sheetname)
     killExcel()
     return data

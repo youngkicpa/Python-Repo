@@ -42,37 +42,53 @@ class FolderSelectorApp(QMainWindow):
         folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
         files = []
         names = {
-            "검토자":     "검토자:                 서명:                      작성일: 2024  / 11 /",
-            "작성자":     "작성자:     김 영생     서명:                      작성일: 2024  / 11 /",
+            "검토자":     "검토자:                 서명:                      작성일: 2025  / 03 /",
+            "작성자":     "작성자:     김 영생     서명:                      작성일: 2025  / 03 /",
             "작성자기말": "작성자:     김 영생     서명:                      작성일: 2025  / 03 /",
             "기말날짜":   "2024-12-31",
             "전기말날짜": "2023-12-31",
-            "당기말":     "2024-09-30",
-            "전기말":     "2023-09-30",
+            "당기말":     "2024-12-31",
+            "전기말":     "2023-12-31",
             "회계연도":   "회계연도: 제 38 기 - 2024 년 1 월 1 일부터   2024  년 12 월 31 일까지",            
-            "회사명":     "회사명: (주)비룡"
+            "회사명":     "회사명: 알파(주)"
         }
-        xl = win.gencache.EnsureDispatch("Excel.Application") # type: ignore
-        xl.Visible = False        
         
+        xl = win.gencache.EnsureDispatch("Excel.Application")  
+        xl.Visible = False  
+
         if folder_path:
             self.text_edit.clear()
             files = self.get_files_list(folder_path)
+            
             for filename in files:
-                if filename.split('.')[1] == "xlsx":
-                    wb = xl.Workbooks.Open(os.path.join(folder_path, filename))
+                if filename.split('.')[-1] == "xlsx":  
+                    file_path = os.path.join(folder_path, filename)
+                    wb = xl.Workbooks.Open(file_path)
+
+                    # 기존 이름 삭제 (예외 처리 추가)
+                    if wb.Names.Count > 0:  # 기존 이름이 있을 때만 실행
+                        for name in list(wb.Names):
+                            if name is None or name.Name is None:
+                                continue  # None 값이 있으면 건너뜀
+                            try:
+                                name_str = str(name.Name)
+                                print(f"Deleting: {name_str}")
+                                name.Delete()
+                                print(f"Deleted: {name_str}")
+                            except Exception as e:
+                                print(f"Error deleting name {name_str}: {e}")
+
+                    # 새로운 이름 추가
                     for key, value in names.items():
                         if self.check_name(wb, key):
                             wb.Names.Item(key).RefersTo = value
                         else:
                             wb.Names.Add(Name=key, RefersTo=value)
-                else:
-                    continue
 
-        wb.Save()
-        wb.Close()
+                    wb.Save()  
+                    wb.Close()  
+
         xl.Quit()
-        self.text_edit.append("Name 변경하기가 종료되었습니다.")
 
     def get_files_list(self, folder_path):
         self.text_edit.append(f"Folder: {os.path.basename(folder_path)}")

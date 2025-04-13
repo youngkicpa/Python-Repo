@@ -115,6 +115,41 @@ class Vouchers:
             print(f"{key}\t{value}")
         return filtered
 
+    def testExtraVouchers(self, voucher, minAmount, maxAmount):
+        if voucher.creditSum >= minAmount and voucher.creditSum <= maxAmount:
+            return True
+        return False
+    
+    def ExtraOrdinaryTransactions(self, minAmount, maxAmount):
+        debitInfo = {}
+        creditInfo = {}
+        count = 0
+        filtered = []
+        for voucher in self.vouchers:
+            if self.testExtraVouchers(voucher, minAmount, maxAmount):
+                count += 1
+                filtered.append(voucher)
+                for index, d in enumerate(voucher.debit["accounts"]):
+                    if d in debitInfo:
+                        debitInfo[d] += voucher.debit["amounts"][index]
+                    else:
+                        debitInfo[d] = voucher.debit["amounts"][index]
+
+                for index, c in enumerate(voucher.credit["accounts"]):
+                    if c in creditInfo:
+                        creditInfo[c] += voucher.credit["amounts"][index]
+                    else:
+                        creditInfo[c] = voucher.credit["amounts"][index]
+
+        print(f"{count}개의 전표가 있습니다.")
+        print("차변")
+        for key, value in debitInfo.items():
+            print(f"{key}\t{value}")
+        print("대변")
+        for key, value in creditInfo.items():
+            print(f"{key}\t{value}")
+        return filtered
+    
     def getVouchersAmounts(self):
         count = 0
         count_minus = 0
