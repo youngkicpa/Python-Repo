@@ -1,6 +1,6 @@
 import pandas as pd
 
-class DozonGLDataframe:
+class DuzonGLDataframe:
     def __init__(self, table):
         self.title = table[0]
         self.data = pd.DataFrame(table[1:], columns=self.title)

@@ -1,52 +1,39 @@
-import win32com.client as win
+import openpyxl
 import psutil
 from GLforAmotech import *
 from MyPPrint import *
 from Voucher import *
 from Vouchers import *
 
-def killExcel():
-    for proc in psutil.process_iter():
-        # check whether the process name matches
-            if proc.name() == "EXCEL.EXE":
-                proc.kill()
-
 def LoadExcel(filename, sheetname):
-    xl = win.gencache.EnsureDispatch("Excel.Application") # type: ignore
-    xl.Visible = False
-
-    wb = xl.Workbooks.Open(filename)
-    ws = wb.Worksheets(sheetname)
-
-    data = ws.UsedRange.Value
-
-    wb.Save()
-    wb.Close()
-    xl.Quit()
-    
+    wb = openpyxl.load_workbook(filename, data_only=True)
+    ws = wb[sheetname]
+    data = [[cell.value for cell in row] for row in ws.iter_rows()]
+    wb.close()
     return data
 
-def SaveExcel(filename, data):
-    xl = win.gencache.EnsureDispatch("Excel.Application") # type: ignore
-    xl.Visible = False
-
-    wb = xl.Workbooks.Add()
-    ws = wb.Worksheets(1)
-    result = tuple(data)
-
-    ws.Range(xl.Cells(1, 1), xl.Cells(len(data), len(data[0]))).Value = tuple(data)
-
-    wb.SaveAs(filename)
-    wb.Close()
-    xl.Quit()
+def SaveExcel(filename, data, sheet_name="Sheet1"):
+    try:
+        wb = openpyxl.load_workbook(filename)
+    except FileNotFoundError:
+        wb = openpyxl.Workbook()
     
+    if sheet_name in wb.sheetnames:
+        ws = wb[sheet_name]
+    else:
+        ws = wb.create_sheet(title=sheet_name)
+    
+    for row in data:
+        ws.append(row)
+    
+    wb.save(filename)
+    wb.close()
     return data
 
 def GetExcelData():
     filename = "C:\\DataTest\\아모텍_분개장 (2024_12).xlsx"
     sheetname = "Sheet1"  
     data = LoadExcel(filename, sheetname)
-    killExcel()
     return data
 
 if __name__ == "__main__":    
@@ -55,7 +42,6 @@ if __name__ == "__main__":
     vouchers = Vouchers()
     vouchers.getVouchers(data)
 
-    
     trialNo = 0
     while  1:
         print("다음 중 원하는 작업을 선택하시요")
@@ -66,9 +52,6 @@ if __name__ == "__main__":
         print("   5. 전표금액의 범위별 숫자확인하기")
         print("   6. 전표금액의 범위별 전표추출하기")
         print("   9. 종료하기")
-        print("   \nAttributeError: module 'win32com.gen_py.00020813-0000-0000-C000-000000000046x0x1x9' has no attribute 'CLSIDToClassMap'")
-        print(r"   위의 에러메시지가 발생을 하면, 해결하는 방법은 C:\Users\young\AppData\Local\Temp\gen_py 폴더의 내용을 모두 삭제한다.")
-        print("   그래도 안되면, pip uninstall pywin32 그리고 pip install pywin32")
         selection = input("선택:  ")
         trialNo += 1
         match selection:
@@ -77,7 +60,7 @@ if __name__ == "__main__":
                 glforAmotech = Amotech(data)
                 glforAmotech.getTrialBalance()
                 trialBalance = glforAmotech.changeTrialBalanceList()
-                SaveExcel(targetFileName, sorted(trialBalance))
+                SaveExcel(targetFileName, sorted(trialBalance), "TrialBalance")
                 glforAmotech.printTrialBalance()
             case '2':
                 print(f"\nHello {trialNo}")
@@ -85,7 +68,7 @@ if __name__ == "__main__":
                 filteredList = []    
                 for voucher in filtered:
                      filteredList.extend(voucher.ToList())
-                SaveExcel(targetFileName, filteredList)
+                SaveExcel(targetFileName, filteredList, "MinusSales")
             case '3':
                 print(f"\nHello {trialNo}")
                 vouchers.salesTransactions()
@@ -95,22 +78,15 @@ if __name__ == "__main__":
             case '5':
                 print(f"\nHello {trialNo}")           
                 result = vouchers.getVouchersAmounts()
-                SaveExcel(targetFileName, result)
+                SaveExcel(targetFileName, result, "VoucherAmount")
             case '6':
                 print(f"\nHello {trialNo}")
                 filtered = vouchers.ExtraOrdinaryTransactions(7500000000, 100000000000)
                 filteredList = []
                 for voucher in filtered:
                     filteredList.extend(voucher.ToList())
-                SaveExcel(targetFileName, filteredList)
+                SaveExcel(targetFileName, filteredList, "ExtraOrdinary")
             case '9':
                 break 
             case _ : 
                 continue 
-
-        
-
-    
-
-    
-    

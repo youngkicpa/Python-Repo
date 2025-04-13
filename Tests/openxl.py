@@ -1,7 +1,7 @@
 # %%
 import openpyxl as xl
 import pandas as pd
-from dozonGL import DozonGLDataframe
+from duzonGL import DuzonGLDataframe
 
 class MyXL:
     def __init__(self, fileName=None, sheetName=None, readOnly=False):
@@ -113,14 +113,14 @@ def printDataFrameInfo(df):
     print("First few rows:")
     print(df.head())
 
-if __name__ == "__main__":
+def getKSsystemTrialBalance():
     fileName = "C:\\DataTest\\분개장_KSsystem_2409.xlsx"
-    myxl = MyXL(fileName)
+    myxl = MyXL(fileName, "Sheet")
     #rangeTuple = getUsedRangeValues(ws)
     #print(rangeTuple)
     #데이타프레임이 어떻게 표현되는지 확인 필요함.
     source = myxl.getUsedRangeValues()
-    mygl = DozonGLDataframe(source)
+    mygl = DuzonGLDataframe(source)
     trialBalance = mygl.getTrialBalanceKSsystem()
 
     tagetFileName = "C:\\Data\\Programming\\python\\Tests\\resultTB.xlsx"
@@ -130,3 +130,6 @@ if __name__ == "__main__":
     targetxl.save(tagetFileName)
     myxl.save(myxl.fileName)
 # %%
+if __name__ == "__main__":
+    getKSsystemTrialBalance()
+    
